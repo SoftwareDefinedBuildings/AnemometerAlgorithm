@@ -1,6 +1,6 @@
 # AnemometerAlgorithm
 
-This is intended to be the implementation of the Anemometer algorithm but at present the algorithm is implemented as part of the user interface. This is by default configured to output the results of the processing to standard output as well. The data structure looks:
+This is intended to be the implementation of the Anemometer algorithm but at present the algorithm is implemented as part of the user interface. This is by default configured to output the results of the processing to standard output as well. The data structure is JSON and captures a full set of readings.
 
 Here is an example 
 ```
