@@ -6,6 +6,7 @@ SHELL := /bin/bash # Use bash syntax
 
 entry:
 	@echo "usage:"
+	@echo "make anemomteer3 : make the anemomteer executable"
 	@echo "make check : checks that the algorithm compiles"
 	@echo "make publish : publishes the algorithm to the server"
 
@@ -24,10 +25,14 @@ deps:
 .PHONY: deps
 
 publish: check
-
+	@echo "Remote publishing disabled at Ed and Ali's request"
 
 .PHONY: publish
 
 check: deps
 	cd src && ${GOROOT}/bin/go build
 .PHONY: check
+
+anemomteer3: deps
+	cd src && ${GOROOT}/bin/go build && mv src ../anemomteer3
+.PHONY: anemomteer3
