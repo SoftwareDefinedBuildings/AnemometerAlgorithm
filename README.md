@@ -3,7 +3,7 @@
 This is intended to be the implementation of the Anemometer algorithm but at present the algorithm is implemented as part of the user interface. This is by default configured to output the results of the processing to standard output as well. The data structure looks:
 
 Here is an example 
-```json
+```
 {
   "Timestamp": 1513978578493813500, // Unix Nano timestamp
   "Sensor": "579d5bca617c6479", //Mac address of the source
