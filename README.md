@@ -5,15 +5,15 @@ This is intended to be the implementation of the Anemometer algorithm but at pre
 Here is an example 
 ```json
 {
-  "Timestamp": 1513978578493813500,
-  "Sensor": "579d5bca617c6479",
-  "Vendor": "ucberkeley",
-  "Algorithm": "1.0",
-  "Tofs": [
+  "Timestamp": 1513978578493813500, // Unix Nano timestamp
+  "Sensor": "579d5bca617c6479", //Mac address of the source
+  "Vendor": "ucberkeley", //Algorithm vendor
+  "Algorithm": "1.0", //Algorithm version
+  "Tofs": [   //The time of flights emitted by the algorithm
     {
-      "Src": 0,
-      "Dst": 1,
-      "Val": 555
+      "Src": 0,  //The originating ASIC
+      "Dst": 1,  //The receiving ASIC
+      "Val": 555  //These are stubs because the algorithm is not implemented
     },
     {
       "Src": 0,
@@ -71,16 +71,99 @@ Here is an example
       "Val": 555
     }
   ],
-  "RawInput": {
+  //Outputted temperature calculated by the algorithm
+  //These are placeholders
+  "Temperatures": [
+    {
+      "Src": 0,
+      "Dst": 1,
+      "Val": 25.5
+    },
+    {
+      "Src": 0,
+      "Dst": 2,
+      "Val": 25.5
+    },
+    {
+      "Src": 0,
+      "Dst": 3,
+      "Val": 25.5
+    },
+    {
+      "Src": 1,
+      "Dst": 0,
+      "Val": 25.5
+    },
+    {
+      "Src": 1,
+      "Dst": 2,
+      "Val": 25.5
+    },
+    {
+      "Src": 1,
+      "Dst": 3,
+      "Val": 25.5
+    },
+    {
+      "Src": 2,
+      "Dst": 0,
+      "Val": 25.5
+    },
+    {
+      "Src": 2,
+      "Dst": 1,
+      "Val": 25.5
+    },
+    {
+      "Src": 2,
+      "Dst": 3,
+      "Val": 25.5
+    },
+    {
+      "Src": 3,
+      "Dst": 0,
+      "Val": 25.5
+    },
+    {
+      "Src": 3,
+      "Dst": 1,
+      "Val": 25.5
+    },
+    {
+      "Src": 3,
+      "Dst": 2,
+      "Val": 25.5
+    }
+  ],
+  //These are stubs, the algorithm is not implemented
+  "Velocities": {
+    "X": 1, 
+    "Y": 2,
+    "Z": 3,
+    "Mag": 3.7416573867739413,
+    "Phi": 55,
+    "Theta": 66,
+    "Valid": true
+  },
+  //Extra information the algorithm emits for use by consumers
+  "Extradata": [
+    "the algorithm has not been filled in yet"
+  ],
+  //Information about the signal quality from the anemometers
+  "Uncorrectable": 1,
+  "Correctable": 0,
+  "Total": 17,
+  "RawInput": {  //This is the data passed as an input to the algorithm
     "L7GHeaders": [
       {
-        "Srcmac": "579d5bca617c6479",
+        "Srcmac": "579d5bca617c6479", //The ID of the sensor
         "Srcip": "fe80::559d:5bca:617c:6479",
-        "Popid": "hk070",
+        "Popid": "hk070", //The ID of the border router
         "Poptime": 74143819359,
-        "Brtime": 1513978578493813500,
-        "Rssi": 42,
+        "Brtime": 1513978578493813500, //The time the packet was received
+        "Rssi": 42, //Received signal strength
         "Lqi": 255,
+        //The base64 raw packet payload
         "Payload": "CQtAtgDDND72AAAQHwK7AGsBEApeCA0MABucEswD7AAKA9//JwJl/zUBtP/pAGoArQA0AIAACgBVAOv/mP8JAZz/OQKu/pYDwvwcBA=="
       },
       {
@@ -114,29 +197,29 @@ Here is an example
         "Payload": "CQpDtgPD/D3+AFAQJQK1AF0BEApeCAEHCX5jEiQA/gD3/1QCDwDqAzEASQX+/pwBtP82ATsAngB8AP3/GwCE/x0Abv8bAFz/EQBU/w=="
       }
     ],
-    "ChirpHeaders": [
+    "ChirpHeaders": [ //The decoded version of the packets
       {
         "Type": 11,
-        "Seqno": 46656,
-        "Build": 195,
-        "CalPulse": 160,
+        "Seqno": 46656, 
+        "Build": 195, 
+        "CalPulse": 160, //In ms, the calibration pulse
         "CalRes": [
-          4764,
-          -1,
-          -1,
+          4764,  //The ticks that were measured by each asic
+          -1,    //Although all sampled at once we only transfer
+          -1,    //the calibration result for the primary
           -1
         ],
-        "Primary": 0,
+        "Primary": 0, //Which ASIC was transmitting
         "MaxIndex": [
           -1,
-          13,
+          13,  //The IQ index that had the maximum complex magnitude
           12,
           0
         ],
         "IValues": [
-          null,
+          null,  //We don't include the data for the primary
           [
-            236,
+            236,  //The IQ values cover Max-3, Max-2, Max-1, Max
             -33,
             -155,
             -76
@@ -148,7 +231,7 @@ Here is an example
             -21
           ],
           [
-            265,
+            265, //Unless the MaxIndex <=3 in which case they start at zero
             569,
             918,
             1052
@@ -176,19 +259,19 @@ Here is an example
           ]
         ],
         "Accelerometer": [
-          -112.24,
+          -112.24, //Milli G's  
           60.024,
           999.424
         ],
         "Magnetometer": [
-          54.300000000000004,
+          54.300000000000004,  //micro Tesla
           18.7,
           36.300000000000004
         ],
-        "Temperature": 25.76,
-        "Humidity": 21.42
+        "Temperature": 25.76, //Celsius
+        "Humidity": 21.42 //RH Percentage
       },
-      {
+      { //There is a set of data for each asic as primary.
         "Type": 12,
         "Seqno": 46657,
         "Build": 195,
@@ -408,91 +491,14 @@ Here is an example
         "Humidity": 21.42
       }
     ],
-    "SetInfo": {
-      "Site": "site0",
-      "MAC": "579d5bca617c6479",
-      "Build": 195,
-      "Complete": true,
-      "TimeOfFirst": "2017-12-22T13:36:18.49381362-08:00",
-      "IsDuct": true
+    "SetInfo": { //We also include information about the whole set of 4
+      "Site": "site0", //The site of the border router
+      "MAC": "579d5bca617c6479", //The MAC of the anemometer
+      "Build": 195, //Version
+      "Complete": true, //Is the set of measurements complete (no missing data)
+      "TimeOfFirst": "2017-12-22T13:36:18.49381362-08:00", //The timestamp of the first measurement
+      "IsDuct": true //Is it a duct
     }
-  },
-  "Temperatures": [
-    {
-      "Src": 0,
-      "Dst": 1,
-      "Val": 25.5
-    },
-    {
-      "Src": 0,
-      "Dst": 2,
-      "Val": 25.5
-    },
-    {
-      "Src": 0,
-      "Dst": 3,
-      "Val": 25.5
-    },
-    {
-      "Src": 1,
-      "Dst": 0,
-      "Val": 25.5
-    },
-    {
-      "Src": 1,
-      "Dst": 2,
-      "Val": 25.5
-    },
-    {
-      "Src": 1,
-      "Dst": 3,
-      "Val": 25.5
-    },
-    {
-      "Src": 2,
-      "Dst": 0,
-      "Val": 25.5
-    },
-    {
-      "Src": 2,
-      "Dst": 1,
-      "Val": 25.5
-    },
-    {
-      "Src": 2,
-      "Dst": 3,
-      "Val": 25.5
-    },
-    {
-      "Src": 3,
-      "Dst": 0,
-      "Val": 25.5
-    },
-    {
-      "Src": 3,
-      "Dst": 1,
-      "Val": 25.5
-    },
-    {
-      "Src": 3,
-      "Dst": 2,
-      "Val": 25.5
-    }
-  ],
-  "Velocities": {
-    "X": 1,
-    "Y": 2,
-    "Z": 3,
-    "Mag": 3.7416573867739413,
-    "Phi": 55,
-    "Theta": 66,
-    "Valid": true
-  },
-  "Extradata": [
-    "the algorithm has not been filled in yet"
-  ],
-  "Uncorrectable": 1,
-  "Correctable": 0,
-  "Total": 17
+  }
 }
 ```
