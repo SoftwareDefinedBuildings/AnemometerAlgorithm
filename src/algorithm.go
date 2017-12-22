@@ -8,21 +8,15 @@ import (
 	l7g "github.com/immesys/chirp-l7g"
 )
 
-//Notes
-/*
-- you only calibrate once, and you seem to require some special
-  setup while calibrating
-- you don't properly handle missing data, you treat all readings
-  as next to each other in time
-*/
-
 //You can put some state variables and type definitions here
 type path struct {
 	Src int
 	Dst int
 }
+
 type algorithmstate struct {
 	//This is just example information copied from python
+	//You can put anything you want here
 	AnemometerID       string
 	IsDuct             bool
 	CalibrationPeriod  time.Duration
@@ -149,10 +143,7 @@ func OnNewDataSet(info *l7g.SetInfo, popHdr []*l7g.L7GHeader, data []*l7g.ChirpH
 	//add that in here
 	outputdata.Extradata = append(outputdata.Extradata, "the algorithm has not been filled in yet")
 
-	//Note that you can also use print statements. These are not visible to
-	//consumers of the data, but you can see them using `make watch`
-
-	//Emit the data on the data bus (and if DuplicateEmitToStdout is true, also
+	//Emit the data on the data bus (and if MirrorToStandardOut is true, also
 	//to standard output)
 	emit.Data(outputdata)
 }
