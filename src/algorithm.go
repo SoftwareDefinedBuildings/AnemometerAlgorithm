@@ -5,7 +5,6 @@ import (
 	"math"
 	"time"
 
-	"github.com/davecgh/go-spew/spew"
 	l7g "github.com/immesys/chirp-l7g"
 )
 
@@ -41,15 +40,19 @@ var states map[string]*algorithmstate
 
 func main() {
 	//Register and run our algorithm.
-	l7g.RunDPA([]byte(ourEntity), Initialize, OnNewDataSet,
+	err := l7g.RunDPA([]byte(ourEntity), Initialize, OnNewDataSet,
 		//This is the algorithm vendor
 		"ucberkeley",
 		//This is the algorithm version
 		"1.0")
+	fmt.Printf("fatal error: %v\n", err)
 }
 
 func Initialize(emit l7g.Emitter) {
 	states = make(map[string]*algorithmstate)
+	//If you want the algorithm output to be on standard out as well
+	//to allow for local use, do this
+	emit.MirrorToStandardOutput(true)
 }
 
 // OnNewDataSet encapsulates the algorithm. You can store the emitter and
@@ -62,7 +65,7 @@ func Initialize(emit l7g.Emitter) {
 // Sometimes the popHdr will be nil for an element even if the data is present
 // this indicates a packet that was lost but reconstructed using forward
 // error correction codes.
-func OnNewDataSet(info l7g.SetInfo, popHdr []*l7g.L7GHeader, data []*l7g.ChirpHeader, emit l7g.Emitter) {
+func OnNewDataSet(info *l7g.SetInfo, popHdr []*l7g.L7GHeader, data []*l7g.ChirpHeader, emit l7g.Emitter) {
 
 	//We only want to process complete sets of data
 	if !info.Complete {
@@ -71,14 +74,14 @@ func OnNewDataSet(info l7g.SetInfo, popHdr []*l7g.L7GHeader, data []*l7g.ChirpHe
 
 	//This string is the complete ID of this anemometer
 	//You can use this as a key into buffers of historic state
-	idstring := info.Site + "_" + info.MAC
+	idstring := info.MAC
 	state, found := states[idstring]
 	if !found {
 		//Initialize new algorithm state here
 		//perhaps make it calibrate or something
 		state = &algorithmstate{
 			AnemometerID: idstring,
-			IsDuct:       info.IsDuct(),
+			IsDuct:       info.IsDuct,
 		}
 		states[idstring] = state
 	}
@@ -86,8 +89,8 @@ func OnNewDataSet(info l7g.SetInfo, popHdr []*l7g.L7GHeader, data []*l7g.ChirpHe
 	//Initialize the output data object
 	//We will build up the data inside this as we process the input data
 	outputdata := l7g.OutputData{
-		Timestamp: info.TimeOfFirst,
-		Sensor:    idstring,
+		Timestamp: info.TimeOfFirst.UnixNano(),
+		Sensor:    info.MAC,
 	}
 
 	//Over all paths
@@ -144,14 +147,12 @@ func OnNewDataSet(info l7g.SetInfo, popHdr []*l7g.L7GHeader, data []*l7g.ChirpHe
 
 	//If you have other information output from the algorithm you can
 	//add that in here
-	outputdata.Extradata = append(outputdata.Extradata, "we are busy calibrating")
+	outputdata.Extradata = append(outputdata.Extradata, "the algorithm has not been filled in yet")
 
 	//Note that you can also use print statements. These are not visible to
 	//consumers of the data, but you can see them using `make watch`
-	fmt.Printf("About to emit data\n")
-	spew.Dump(outputdata) //this prints the whole object nicely
 
-	//Emit the data on the data bus
+	//Emit the data on the data bus (and if DuplicateEmitToStdout is true, also
+	//to standard output)
 	emit.Data(outputdata)
-
 }
