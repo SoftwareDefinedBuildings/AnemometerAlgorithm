@@ -33,6 +33,7 @@ type algorithmstate struct {
 var states map[string]*algorithmstate
 
 func main() {
+	fmt.Printf("Version 3.5 ====\n")
 	//Register and run our algorithm.
 	err := l7g.RunDPA([]byte(ourEntity), Initialize, OnNewDataSet,
 		//This is the algorithm vendor
