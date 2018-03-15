@@ -88,12 +88,25 @@ func OnNewDataSet(info *l7g.SetInfo, popHdr []*l7g.L7GHeader, data []*l7g.ChirpH
 	}
 
 	//Over all paths
-	for src := 0; src < 4; src++ {
-		for dst := 0; dst < 4; dst++ {
-			if src == dst {
-				//We don't use data from primary
-				continue
+	//fmt.Printf("data len is %d\n", len(data))
+	for src := 0; src < len(data); src++ {
+		for dst := 0; dst < len(data); dst++ {
+			if info.IsDuct6 {
+				if src < 3 && dst < 3 {
+					continue
+				}
+				if dst >= 3 && dst >= 3 {
+					continue
+				}
+			} else {
+				if src == dst {
+					//We don't use data from primary
+					continue
+				}
 			}
+			// spew.Dump(info)
+			// fmt.Printf("src=%d dst=%d\n", src, dst)
+			// spew.Dump(data)
 			p := path{src, dst}
 			maxIndex := data[src].MaxIndex[dst]
 			if maxIndex < 3 {
