@@ -63,9 +63,9 @@ func Initialize(emit l7g.Emitter) {
 func OnNewDataSet(info *l7g.SetInfo, popHdr []*l7g.L7GHeader, data []*l7g.ChirpHeader, emit l7g.Emitter) {
 
 	//We only want to process complete sets of data
-	if !info.Complete {
-		return
-	}
+	// if !info.Complete {
+	// 	return
+	// }
 
 	//This string is the complete ID of this anemometer
 	//You can use this as a key into buffers of historic state
@@ -90,55 +90,55 @@ func OnNewDataSet(info *l7g.SetInfo, popHdr []*l7g.L7GHeader, data []*l7g.ChirpH
 
 	//Over all paths
 	//fmt.Printf("data len is %d\n", len(data))
-	for src := 0; src < len(data); src++ {
-		for dst := 0; dst < len(data); dst++ {
-			if info.IsDuct6 {
-				if src < 3 && dst < 3 {
-					continue
-				}
-				if dst >= 3 && dst >= 3 {
-					continue
-				}
-			} else {
-				if src == dst {
-					//We don't use data from primary
-					continue
-				}
-			}
-			// spew.Dump(info)
-			// fmt.Printf("src=%d dst=%d\n", src, dst)
-			// spew.Dump(data)
-			p := path{src, dst}
-			maxIndex := data[src].MaxIndex[dst]
-			if maxIndex < 3 {
-				//This might indicate something is wrong
-				//It also means that our IQ values start from 0
-				//not from maxIndex-3
-			}
-			Ivalue2beforeMax := data[src].IValues[dst][1] //0 is 3 before
-			Qvalue2beforeMax := data[src].QValues[dst][1]
-
-			//Use this as well as other data
-			_ = p
-			_ = maxIndex
-			_ = Ivalue2beforeMax
-			_ = Qvalue2beforeMax
-
-			//To populate outputdata
-			outputdata.Tofs = append(outputdata.Tofs, l7g.TOFMeasure{
-				Src: src,
-				Dst: dst,
-				//Here you should actually put the time of flight in microseconds
-				Val: 555,
-			})
-			outputdata.Temperatures = append(outputdata.Temperatures, l7g.TempMeasure{
-				Src: src,
-				Dst: dst,
-				//Here you should actually put the temperature in celsius
-				Val: 25.5,
-			})
-		}
-	}
+	// for src := 0; src < len(data); src++ {
+	// 	for dst := 0; dst < len(data); dst++ {
+	// 		if info.IsDuct6 {
+	// 			if src < 3 && dst < 3 {
+	// 				continue
+	// 			}
+	// 			if dst >= 3 && dst >= 3 {
+	// 				continue
+	// 			}
+	// 		} else {
+	// 			if src == dst {
+	// 				//We don't use data from primary
+	// 				continue
+	// 			}
+	// 		}
+	// 		// spew.Dump(info)
+	// 		// fmt.Printf("src=%d dst=%d\n", src, dst)
+	// 		// spew.Dump(data)
+	// 		p := path{src, dst}
+	// 		maxIndex := data[src].MaxIndex[dst]
+	// 		if maxIndex < 3 {
+	// 			//This might indicate something is wrong
+	// 			//It also means that our IQ values start from 0
+	// 			//not from maxIndex-3
+	// 		}
+	// 		Ivalue2beforeMax := data[src].IValues[dst][1] //0 is 3 before
+	// 		Qvalue2beforeMax := data[src].QValues[dst][1]
+	//
+	// 		//Use this as well as other data
+	// 		_ = p
+	// 		_ = maxIndex
+	// 		_ = Ivalue2beforeMax
+	// 		_ = Qvalue2beforeMax
+	//
+	// 		//To populate outputdata
+	// 		outputdata.Tofs = append(outputdata.Tofs, l7g.TOFMeasure{
+	// 			Src: src,
+	// 			Dst: dst,
+	// 			//Here you should actually put the time of flight in microseconds
+	// 			Val: 555,
+	// 		})
+	// 		outputdata.Temperatures = append(outputdata.Temperatures, l7g.TempMeasure{
+	// 			Src: src,
+	// 			Dst: dst,
+	// 			//Here you should actually put the temperature in celsius
+	// 			Val: 25.5,
+	// 		})
+	// 	}
+	// }
 
 	//If you have a new velocity estimate, you should also add that here
 	//These are in m/s
