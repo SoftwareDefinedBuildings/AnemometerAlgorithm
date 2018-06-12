@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math"
+	"os"
 	"time"
 
 	l7g "github.com/immesys/chirp-l7g"
@@ -34,12 +35,18 @@ var states map[string]*algorithmstate
 
 func main() {
 	fmt.Printf("Version 3.5 ====\n")
+	localtty := ""
+	if len(os.Args) > 1 {
+		localtty = os.Args[1]
+	}
 	//Register and run our algorithm.
 	err := l7g.RunDPA([]byte(ourEntity), Initialize, OnNewDataSet,
 		//This is the algorithm vendor
 		"ucberkeley",
 		//This is the algorithm version
-		"1.0")
+		"1.0",
+		//This is the address of the local connection or blank to disable
+		localtty)
 	fmt.Printf("fatal error: %v\n", err)
 }
 
