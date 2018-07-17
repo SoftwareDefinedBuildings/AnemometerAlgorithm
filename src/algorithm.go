@@ -34,7 +34,7 @@ type algorithmstate struct {
 var states map[string]*algorithmstate
 
 func main() {
-	fmt.Printf("Version 3.5 ====\n")
+	fmt.Printf("Version 3.6 ====\n")
 	localtty := ""
 	if len(os.Args) > 1 {
 		localtty = os.Args[1]
