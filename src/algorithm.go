@@ -6,6 +6,9 @@ import (
 	"os"
 	"time"
 
+	//dep workaround
+	_ "gopkg.in/vmihailenco/msgpack.v3"
+	_ "github.com/vmihailenco/msgpack"
 	l7g "github.com/immesys/chirp-l7g"
 )
 
